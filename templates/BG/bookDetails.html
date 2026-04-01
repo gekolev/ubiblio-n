@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block main %}
+
+<!-- Banner -->
+	<!-- Two -->
+<div class="inner" style = "padding: 20px 0 5em 5em;">
+<div style="display:block; clear:both; float:none;">
+<h3><strong><u>Детайли за книгата</strong></u></h3>
+<div style="display:block; clear:both; float:none;">
+<div style="width:30%; min-width: 300px; float:left; margin-right:30px;">								
+
+		
+		<p><strong>Заглавие</strong>:  {{ book.title}}</p>
+        <p><strong>Автор</strong>:  {{ book.author}}</p>
+        <p><strong>Резюме</strong>:  {{ book.summary}}</p>
+        <p><strong>Жанр</strong>:  {{ book.genre}}</p>
+        <p><strong>Библиотека</strong>:  {{ book.library}}</p>
+		<p><strong>Рафт</strong>:  {{book.shelf}}</p>
+
+                                </div>
+    <div style="width:30%; min-width: 280px; float:left;">
+        <p><strong>Колекция</strong>:  {{ book.collection}}</p>
+        <p><strong>ISBN</strong>:  {{ book.ISBN}}</p>
+		<p><strong>Бележки</strong>:  {{book.notes}}</p>
+		{% if book.owned %}
+		<p><strong>Притежавана</strong>:  Да</p>
+		{% else %}
+		<p><strong>Притежавана</strong>:  Не</p>
+		{% endif %}
+		{% if book.withdrawn %}
+		<p><strong>Заета</strong>:  Да</p>
+		{% else %}
+		<p><strong>Заета</strong>:  Не</p>
+		{% endif %}
+			{% if config.customFieldName1|length > 0 %}	
+<p><strong>{{config.customFieldName1}}</strong>:  {{book.customField1}}</p>
+	{% endif %}
+			{% if config.customFieldName2|length > 0 %}	
+<p><strong>{{config.customFieldName2}}</strong>:  {{book.customField2}}</p>
+	{% endif %}
+
+		</div>
+	
+	<div style= "display:block; clear:both;float:none;">
+		
+		{% if config.coverImages %}	
+<h3 style="margin-top:25px;"><strong><u>Корица(и)</strong></u></h3>		
+
+<div style = "margin-top:20px;margin-bottom:20px;">
+			{% if images %}
+				{% for image in images %}
+<div style="float:left;">
+<a style = "border:none; margin-right:10px;" href ="{{ url_for('static', path='bookImages')}}/{{ image.filename }}.jpg" target="_blank"><img src="{{ url_for('static', path='bookImages')}}/{{ image.filename }}_thumbnail.jpg"></a>
+
+				{% endfor %}
+		{% endif %}
+</div>
+	{% endif %}	
+	<div style= "display:block; clear:both;float:none;">
+	<hr>
+			<h3><strong><u>Заемане</strong></u></h3>
+				{% if book.withdrawn %}
+<a style="border:none; margin-right:25px;" href="/return/{{book.id}}"><button>Върни</button></a>
+		{% else %}
+<a style="border:none; margin-right:25px;" href="/withdraw/{{book.id}}"><button>Заеми</button></a>
+		{% endif %}
+			
+     </div>  
+	<div style= "display:block; clear:both;float:none;">
+		<h3 style="margin-top:25px; margin-bottom:0px;"><strong><u>Списък за четене</strong></u></h3>
+		<a style="border:none;margin-right:25px;" href="/read/{{book.id}}"><button style="margin-top:20px;">Добави</button></a><a style="border:none;" href="/unread/{{book.id}}"><button style="margin-top:20px;">Премахни</button></a>
+	</div>
+    </div>
+      <!-- more table rows here -->
+
+
+
+	{% if user.isAdmin %}
+			<button class="accordion" style="margin-top:40px;">Администратор</button>
+			<div class="panel">
+			<a style="border:none; margin-right:25px;margin-right:25px;" href="/update_book/{{book.id}}"><button>Редактирай</button></a>
+			<a class="confirm" style="border:none;" href="/delete_book/{{book.id}}" onclick="if (!confirm('Сигурни ли сте?')) return false;"><button style="margin-top:30px;">Изтрий</button></a>
+		    	{% if config.coverImages %}	
+		
+				
+		{% if images %}
+<h3 style="margin-top:25px;"><strong><u>Управление на изображения за книгата</strong></u></h3>
+<div style = "margin-top:20px;margin-bottom:20px;">
+		{% for image in images %}
+<div style="float:left;">
+<a style = "border:none; margin-right:10px;" href ="{{ url_for('static', path='bookImages')}}/{{ image.filename }}.jpg" target="_blank"><img src="{{ url_for('static', path='bookImages')}}/{{ image.filename }}_thumbnail.jpg"></a>
+<form action="/deleteImage/{{ image.id }}" method="post" ><button type="submit" style ="clear:both; display:block; float:none; line-height:0.5em; height:1.5em; padding: 0 1em 0 1em; margin:auto;" onclick="if (!confirm('Сигурни ли сте?')) return false;">Изтрий</button></form>
+</div>
+		{% endfor %}
+</div>
+<div style ="clear:both; display:block; float:none; margin-top: 20px;">
+<form action="/upload/{{ book.id }}" method="post" enctype="multipart/form-data">
+        <!-- File input field -->
+        <label style ="padding-top: 20px;" for="file">Качване на друго изображение: </label>
+        <input type="file" id="file" name="file" accept="image/jpeg" required>
+ 
+        <br><br>
+         
+        <!-- Submit button -->
+        <input type="submit" value="Изпрати">
+    </form>
+</div>
+</div>
+		{% else %}
+<p>Няма записани изображения за тази книга.</p>
+<form action="/upload/{{ book.id }}" method="post" enctype="multipart/form-data">
+        <!-- File input field -->
+        <label for="file">Качване на изображение: </label>
+        <input type="file" id="file" name="file" accept="image/jpeg" required>
+ 
+        <br><br>
+         
+        <!-- Submit button -->
+        <input type="submit" value="Изпрати">
+    </form>
+		{% endif %}
+	{% endif %}
+			</div>
+		{% endif %}
+
+<hr>
+
+</div>
+
+</div>
+								
+<script>
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + "px";
+    } 
+  });
+}
+</script>
+{% endblock %}

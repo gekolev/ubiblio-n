@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block main %}
+<!-- Banner -->
+<!-- Two -->
+<div class="inner" style = "padding: 20px 0 5em 5em;">
+<div style="display:block; clear:both; float:none;">
+<h3><strong><u>Управление на резервни копия</strong></u></h3>
+
+	<a style="border:none; margin-right:25px;margin-right:25px;" href="/export"><button>Създай резервно копие</button></a>
+<hr>
+	<h3><strong><u>Възстановяване от резервно копие</strong></u></h3>
+	
+		<p>Възстановяването от един от файловете по-долу ще презапише базата данни с избраното резервно копие. Това действие е <b>необратимо</b>.</p>
+
+      <!-- more table rows here -->
+	<div style = "">
+  <table>
+    <thead class="visible@l">
+      <tr>
+        <th>Име на файл</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody id = "tablebody">	
+		{% for backup in backups %}
+		<tr><td>{{ backup }}</td><td><a class="confirm" style="border:none;" href="/restoreBackup/{{ backup }}" onclick="if (!confirm('Това ще презапише текущата база данни с това резервно копие. Сигурни ли сте?')) return false;">Възстанови</a> | <a class="confirm" style="border:none;" href="/deleteBackup/{{ backup }}" onclick="if (!confirm('Това ще изтрие резервното копие. Сигурни ли сте?')) return false;">Изтрий</a> | <a class="confirm" style="border:none;" href="/downloadBackup/{{ backup }}" >Изтегли</a></td>
+	
+{% endfor %}	
+			 </tbody>
+  </table>
+		</div>
+<hr>
+	<h3><strong><u>Резервни копия на файлове</strong></u></h3>
+	
+		<p>По-долу са всички резервни копия на файлове от ubiblio. Това включва електронни книги и изображения.</p>
+
+      <!-- more table rows here -->
+	<div style = "">
+  <table>
+    <thead class="visible@l">
+      <tr>
+        <th>Име на файл</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody id = "tablebody">	
+		{% for fileExport in fileExports %}
+		<tr><td>{{ fileExport }}</td><td><a class="confirm" style="border:none;" href="/restoreFileBackup/{{ fileExport }}" onclick="if (!confirm('Това ще презапише текущата база данни с това резервно копие. Сигурни ли сте?')) return false;">Възстанови</a> | <a class="confirm" style="border:none;" href="/deleteBackup/{{ fileExport }}" onclick="if (!confirm('Това ще изтрие резервното копие. Сигурни ли сте?')) return false;">Изтрий</a> | <a class="confirm" style="border:none;" href="/downloadBackup/{{ fileExport }}" >Изтегли</a></td>
+	
+{% endfor %}	
+			 </tbody>
+  </table>
+		</div>
+<hr>
+
+	<h3><strong><u>Експорт на списък с книги</u></strong></h3>
+	<p>Това са само списъци с книги -- например ако искате да преместите група книги от една библиотека uBiblio в друга. Или ако просто искате CSV файл с вашите книги, който можете да отворите с други приложения.</p>
+	<a style="border:none; margin-right:25px;margin-right:25px;" href="/exportcsv"><button>Създай CSV</button></a>
+	
+	<p><br>Възстановяването от един от тези файлове <strong>НЯМА</strong> да изтрие текущата база данни. Всички книги от файла ще бъдат добавени към текущата база данни. Добра практика е да направите резервно копие на базата данни преди това.</p>
+<table>
+    <thead class="visible@l">
+      <tr>
+        <th>Име на файл</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody id = "tablebody">	
+		{% for bookexport in bookExports %}
+		<tr><td>{{ bookexport }}</td><td><a class="confirm" style="border:none;" href="/addByCSV/{{ bookexport }}" onclick="if (!confirm('Това ще добави книгите от файла в базата данни. Сигурни ли сте?')) return false;">Добави в БД</a> | <a class="confirm" style="border:none;" href="/deleteBackup/{{ bookexport }}" onclick="if (!confirm('Това ще изтрие този експорт на книги. Сигурни ли сте?')) return false;">Изтрий</a> | <a class="confirm" style="border:none;" href="/downloadBackup/{{ bookexport }}" >Изтегли</a></td>
+	
+{% endfor %}	
+			 </tbody>
+  </table>
+<hr>
+		<h3><strong><u>Качване на резервно копие</u></strong></h3>
+		<p>Тук се приемат резервни копия на бази данни, файлови резервни копия и експорти на списъци с книги, така че можете да ги използвате за обединяване на библиотеки, преместване на нов сървър или преминаване към по-нова версия на приложението.</p>
+<div style="display:block; clear:both; float:none;">
+	<form action="/uploadBackup/" method="post" enctype="multipart/form-data">
+        <!-- File input field -->
+        <label for="file">Качване на резервно копие: </label>
+        <input type="file" id="file" name="file" required>
+ 
+        <br><br>
+         
+        <!-- Submit button -->
+        <input type="submit" value="Качи">
+    </form>
+</div>
+
+<hr>
+
+</div>
+
+</div>
+{% endblock %}

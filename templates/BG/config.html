@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block main %}
+
+<!-- Banner -->
+<!-- Two -->
+	<section id="two">
+		<div class="inner" style = "padding: 20px 0 1em 0;">
+
+<h1>Редактиране на настройките на библиотеката</h1>
+
+{% for error in errors %}
+    <p style="color: red">{{ error }}</p>
+{% endfor %}
+<div style="display:block; clear:both; float:none;">
+<div style="width:30%; min-width: 300px; float:left; margin-right:30px;">
+<form action="/config" method="post">
+        <p>Версия на базата данни: {{ config.version }}</p>
+	  <input type="hidden" id="version" name="version" value="1.0.1"> 
+    <p>
+        <p><label for="">Активиране на изображения на корици: </label></p>
+	<select name="coverImages" id="coverImages">
+		{% if config.coverImages %}
+					<option value="{{ config.coverImages }}" selected>Да</option>
+		{% else %}
+		<option value="{{ config.coverImages }}" selected>Не</option>
+		{% endif %}
+  <option value="True">Да</option>
+  <option value="False">Не</option>
+</select>
+    </p>
+    <p>
+        <p><label for="">Потребителско поле 1
+			(празно за деактивиране): </label></p>
+        <input type="text" name="customFieldName1" value="{{ config.customFieldName1 }}">
+    </p>
+    <p>
+        <p><label for="">Потребителско поле 2
+			(празно за деактивиране): </label></p>
+        <input type="text" name="customFieldName2" value="{{ config.customFieldName2 }}">
+    </p>
+
+    <p>
+        <p><label for="">Жанрове (разделени със запетая): </label></p>
+        <input type="text" name="genres" value="{{ config.genres }}">
+    </p>
+    </div>
+    <div style= "display:block; clear:both;float:none;">
+    <input  type="submit" value="Приложи">
+    
+</form>
+<a style = "border:none;" href = "/backups"> <button>Управление на резервни копия</button></a>
+<a style = "border:none;" href = "/backups"> <button>Статистики</button></a>
+<a style = "border:none;" href = "/"> <button>Назад</button></a>
+    </div>
+
+<hr>
+
+</div>
+
+</div>
+
+</section>
+{% endblock %}

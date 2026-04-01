@@ -84,9 +84,31 @@ async def startup():
         #redis_connection = redis.from_url(REDIS_URL, username=None, password=None, encoding="utf-8", decode_responses=True)
         await FastAPILimiter.init(redis_connection)
 
-language_templates = "templates/" + LANGUAGE
-print(language_templates)
-templates = Jinja2Templates(directory=language_templates)
+# --------------------------------------------------------------------------
+# Language-aware template setup
+# --------------------------------------------------------------------------
+_templates_map = {
+    "EN": Jinja2Templates(directory="templates"),
+}
+if path.isdir("templates/FR"):
+    _templates_map["FR"] = Jinja2Templates(directory="templates/FR")
+if path.isdir("templates/BG"):
+    _templates_map["BG"] = Jinja2Templates(directory="templates/BG")
+
+_default_lang = LANGUAGE if LANGUAGE in _templates_map else "EN"
+
+class _LanguageTemplates:
+    """Wrapper that picks the right Jinja2Templates per request based on a cookie."""
+    def TemplateResponse(self, name, context, **kwargs):
+        request = context.get("request")
+        lang = _default_lang
+        if request:
+            cookie_lang = request.cookies.get("ubiblio_lang")
+            if cookie_lang and cookie_lang in _templates_map:
+                lang = cookie_lang
+        return _templates_map[lang].TemplateResponse(name, context, **kwargs)
+
+templates = _LanguageTemplates()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 settings = Settings()
 
@@ -255,6 +277,16 @@ async def login_post(request: Request):
 def login_get():
     response = RedirectResponse(url="/")
     response.delete_cookie(settings.COOKIE_NAME)
+    return response
+
+
+@app.get("/setLanguage/{lang}")
+def set_language(request: Request, lang: str):
+    if lang not in _templates_map:
+        lang = "EN"
+    referer = request.headers.get("referer", "/")
+    response = RedirectResponse(url=referer, status_code=status.HTTP_303_SEE_OTHER)
+    response.set_cookie(key="ubiblio_lang", value=lang, max_age=365*24*60*60, httponly=True)
     return response
 
 

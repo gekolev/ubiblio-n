@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block main %}
+<!-- Banner -->
+<!-- Two -->
+<section id="two">
+	<div class="inner" style = "padding: 20px 0 1em 0;">
+		<header class="major">
+			<h2>Управление на ключове за федерация</h2>
+		</header>
+		{% for error in errors %}
+		    <p style="color: red">{{ error }}</p>
+		{% endfor %}
+		<form onsubmit="getPubkey();return false;">
+			<p>
+			    <p><label for="">URL -- задължително</label></p>
+			    <input id="addFed" type="text" name="url" value="" required>
+			</p>
+			<p>
+			    <p><label for="">Ключ за верификация (по избор)</label></p>
+			    <input type="text" name="vkey" value="">
+			</p>
+			<input type="submit" value="Изпрати">
+		</form>
+<p>Инструкции: Просто въведете URL адреса на тяхната библиотека. uBiblio ще се опита автоматично да извлече техния ключ за верификация (публичен ключ). uBiblio ще пропусне тази стъпка, ако сами зададете ключ.</p>
+
+<p>Забележка: Добавянето на ключа на друга библиотека ще им позволи да търсят и преглеждат вашите книги. Те трябва да добавят вашия ключ към своята библиотека, за да могат вашите потребители да търсят в тяхната. Преди тази стъпка тяхната библиотека ще се показва в опциите за разширено търсене, но търсенията ще са невъзможни.</p>
+	</div>				
+</section>
+<script>
+async function getPubkey()
+{
+	vkeyURL = $("#addFed").val().replace(/\/?$/, '/') + "vkey";
+	console.log(vkeyURL);
+    var xhr = new XMLHttpRequest();
+    xhr.open( "GET", vkeyURL, true );
+	xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+        submitVkey(xhr.responseText);
+		
+    }
+};	
+    xhr.send( null );
+}
+	
+function submitVkey(newvkey){	
+console.log(newvkey);
+var xhr = new XMLHttpRequest()
+var vkeyURL = $("#addFed").val();
+var data = JSON.stringify({"url": vkeyURL, "vkey": newvkey});	
+console.log(data);
+xhr.open("POST", "/addVkey", false);
+xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {     
+		window.location.href = "/manageVkeys";
+};		
+}
+xhr.send(data);
+}	
+
+
+</script>
+
+{% endblock %}

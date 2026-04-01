@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block main %}
+
+<!-- Banner -->
+<!-- Two -->
+	<section id="two">
+		<div class="inner" style = "padding: 20px 0 1em 0;">
+
+<h1>Управление на ключове за верификация (Федерация)</h1>
+
+{% for error in errors %}
+    <p style="color: red">{{ error }}</p>
+{% endfor %}
+
+<a style ='text-decoration:none !important; border:none;margin-left:25px;' href="/newVkey"><button style="margin-bottom:25px;">Добави нов ключ</button></a>
+<h2 style="margin-top:25px; margin-bottom:15px;">Списък с ключове за верификация</h2>
+
+<div class="container">  
+  <table>
+    <thead class="visible@l">
+      <tr>
+        <th>URL</th>
+        <th>Ключ</th>
+		<th>Действия</th>  
+      </tr>
+    </thead>
+    <tbody id = "tablebody">
+{% if vkeys %}
+{% for vkey in vkeys %}
+		<tr>
+			<td>{{ vkey.url }}</td>
+			<td>{{ vkey.vkey[0:12] }}...</td>
+			<td><a href="/deleteVkey/{{ vkey.id }}" onclick="if (!confirm('Сигурни ли сте?')) return false;">Изтрий</a>&nbsp;&nbsp;&nbsp;<a href="#" onclick="getPubkey('{{ vkey.url }}','{{ vkey.id }}');">Обнови</a></td>
+		</tr>
+{% endfor %}
+{% else %}
+<td>Няма ключове за показване -- Федерацията е деактивирана.</td>
+			<td></td>
+			<td></td>
+		{% endif %}
+    </tbody>
+  </table>
+  <div id="pagination">
+  </div>
+	<p> Тази функция позволява на потребители от други библиотеки uBiblio да търсят и преглеждат вашите книги. Те не могат да заемат, редактират или изтриват съдържанието на вашата библиотека.</p>
+</div>
+
+</div>
+		
+</section>
+
+<script>
+async function getPubkey(vkeyURL, vkeyId)
+{
+	vkeyURLget = vkeyURL + "vkey";
+    var xhr = new XMLHttpRequest();
+    xhr.open( "GET", vkeyURLget, true );
+	xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+        submitVkey(xhr.responseText, vkeyId);
+		
+    }
+};	
+    xhr.send( null );
+}
+	
+function submitVkey(newVkey, vkeyId){	
+var xhr = new XMLHttpRequest()
+var data = JSON.stringify({"id": vkeyId, "vkey": newVkey});	
+xhr.open("POST", "/refreshVkey", false);
+xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {     
+		window.location.href = "/manageVkeys";
+};		
+}
+xhr.send(data);
+}	
+
+
+</script>
+
+
+
+{% endblock %}

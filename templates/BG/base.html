@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<script src="{{ url_for('static', path='assets/js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', path='assets/js/jquery.min.js')}}"></script>
 		<title>uBiblio</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
@@ -22,11 +22,11 @@
 
 				<!-- Header -->
 					<header id="header" class="alt">
-						<a href="/" class="logo"><strong>uBiblio</strong> <span>Personal Library</span></a>
+						<a href="/" class="logo"><strong>uBiblio</strong> <span>Лична Библиотека</span></a>
 						<nav>
-							<a href="/setLanguage/EN" style="border-bottom:none;margin-right:5px;"><strong>EN</strong></a>
-							<a href="/setLanguage/BG" style="border-bottom:none;margin-right:10px;">BG</a>
-							<a href="#menu">Menu</a>
+							<a href="/setLanguage/EN" style="border-bottom:none;margin-right:5px;">EN</a>
+							<a href="/setLanguage/BG" style="border-bottom:none;margin-right:10px;"><strong>BG</strong></a>
+							<a href="#menu">Меню</a>
 						</nav>
 					</header>
 
@@ -34,26 +34,26 @@
         {% if hideNav is defined and hideNav %}
 					<nav id="menu">
 						<ul class="links">
-							<li>Log In for Access</li>
+							<li>Необходимо е влизане</li>
 						</ul>
 					</nav>
           {% else %}
 						<nav id="menu">
 							<ul class="links">
-							<li><a href="/">Search</a></li>
-							<li><a href="/fedsearch">Advanced Search</a></li>
-							<li><a href="/genre/">Browse by Genre</a></li>
-								<li><a href="/wishlist/">Wishlist</a></li>
-							<li><a href="/readingLists">Reading Lists</a></li>
-								<li><a href="/withdrawn">Withdrawn Books</a></li>
+							<li><a href="/">Търсене на книги</a></li>
+							<li><a href="/fedsearch">Разширено търсене</a></li>
+							<li><a href="/genre/">Преглед по жанрове</a></li>
+								<li><a href="/wishlist/">Списък с желания</a></li>
+							<li><a href="/readingLists">Списъци за четене</a></li>
+								<li><a href="/withdrawn">Заети книги</a></li>
 								{% if user.isAdmin %}
-								<li><a href="/config">Config</a></li>
-								<li><a href="/userManagement">User Management</a></li>
-								<li><a href="/manageVkeys">Federation</a></li>
+								<li><a href="/config">Настройки</a></li>
+								<li><a href="/userManagement">Управление на потребители</a></li>
+								<li><a href="/manageVkeys">Федерация</a></li>
 								{% endif %}
 						</ul>
 						<ul class="actions stacked">
-							<li><a href="/auth/logout" class="button fit">Log Out</a></li>
+							<li><a href="/auth/logout" class="button fit">Изход</a></li>
 						</ul>
 					</nav>
         {% endif %}
